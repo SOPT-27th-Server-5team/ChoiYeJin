@@ -5,6 +5,8 @@ const responseMessage = require('../../modules/responseMessage');
 const statusCode = require('../../modules/statusCode');
 let membersDB = require('../../modules/membersDB');
 
+/** 3차 세미나 과제 level2 */ 
+
 /** 멤버를 생성 */
 router.post('/', (req, res) => {
     const { name, part, age } = req.body;
