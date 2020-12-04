@@ -2,6 +2,7 @@ const { Post, User, Like } = require('../models');
 const ut = require('../modules/util');
 const sc = require('../modules/statusCode');
 const rm = require('../modules/responseMessage');
+const { DELETE_LIKE_SUCCESS, DELETE_LIKE_FAIL } = require('../modules/responseMessage');
 
 module.exports = {
     /* 
@@ -49,21 +50,50 @@ module.exports = {
         }
     },
 
-    manageLike: async (req, res) => {
+    createLike: async (req, res) => {
         const PostId = req.params.postId; 
         const UserId = req.body.userId;
         try {
-            const like = await Like.findOne({PostId, UserId});
-            if (like) {
-                await like.destroy({ PostId, UserId });
-                return res.status(sc.OK).send(ut.success(sc.OK, "좋아요 취소", like));
-            } else {
-                const new_like = await Like.create({ PostId, UserId });
-                return res.status(sc.OK).send(ut.success(sc.OK, "좋아요 생성", new_like));
-            }
+            const like = await Like.create({ PostId, UserId });
+            return res.status(sc.OK).send(ut.success(sc.OK, rm.CREATE_LIKE_SUCCESS, like));
         } catch(err) {
             console.log(err);
-            return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "좋아요 실패"));
+            return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.CREATE_LIKE_FAIL));
         }
+
     },
+
+    deleteLike: async (req, res) => {
+        const PostId = req.params.postId;
+        const UserId = req.body.userId;
+        try {
+            Like.destroy({ where: {
+                postId: PostId,
+                userId: UserId,
+            }});
+            return res.status(sc.OK).send(ut.success(sc.OK, rm.DELETE_LIKE_SUCCESS));
+        } catch (err) {
+            console.log(err);
+            return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.DELETE_LIKE_FAIL));
+        }
+    }
+    
+    // 좋아요 생성, 삭제 한개로 만들기
+    // manageLike: async (req, res) => {
+    //     const PostId = req.params.postId; 
+    //     const UserId = req.body.userId;
+    //     try {
+    //         const like = await Like.findOne({PostId, UserId});
+    //         if (like) {
+    //             await like.destroy({ PostId, UserId });
+    //             return res.status(sc.OK).send(ut.success(sc.OK, "좋아요 취소", like));
+    //         } else {
+    //             const new_like = await Like.create({ PostId, UserId });
+    //             return res.status(sc.OK).send(ut.success(sc.OK, "좋아요 생성", new_like));
+    //         }
+    //     } catch(err) {
+    //         console.log(err);
+    //         return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "좋아요 실패"));
+    //     }
+    // },
 }

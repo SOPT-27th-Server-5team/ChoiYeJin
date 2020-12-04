@@ -10,6 +10,9 @@ router.post('/', upload.single("image"),postController.createPost);
 router.get('/', postController.readPosts);
 
 /* [POST] localhost:3000/posts/:postID/like */
-router.post('/:postId/like', postController.manageLike);
+router.post('/:postId/like', postController.createLike);
+
+/* [DELETE] localhost:3000/posts/:postID/like */
+router.delete('/:postId/like', postController.deleteLike);
 
 module.exports = router;
