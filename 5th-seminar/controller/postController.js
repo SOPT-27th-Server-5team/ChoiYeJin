@@ -77,7 +77,7 @@ module.exports = {
             return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.DELETE_LIKE_FAIL));
         }
     }
-    
+
     // 좋아요 생성, 삭제 한개로 만들기
     // manageLike: async (req, res) => {
     //     const PostId = req.params.postId; 

@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const util = require('../modules/util');
 const responseMessage = require('../modules/responseMessage');
 const statusCode = require('../modules/statusCode');
-const { User } = require('../models');
+const { User, Post } = require('../models');
 const { userService }= require('../service');
 
 module.exports = {
@@ -85,7 +85,17 @@ module.exports = {
     readOne: async (req, res) => {
         const { id } = req.params;
         try{
-          const user = await User.findOne({ where: { id }});
+          const user = await User.findOne({ 
+              where: { id },
+              attributes: ["id", "email", "userName"],
+              include: [{
+                      model: Post,
+              }, {
+                  model: Post,
+                  as: 'Liked',
+              },
+            ]
+            });
           if (!user) {
             console.log('존재하지 않는 아이디 입니다.');
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.NO_USER));
