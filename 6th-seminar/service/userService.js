@@ -42,5 +42,32 @@ module.exports = {
     } catch (err) {
       throw err;
     }
+  },
+
+  getUserID: async (id) => {
+    try {
+      const user = await User.findOne({
+        where : {
+           id : id
+        },
+        attributes: {
+          exclude : ['password', 'salt']
+        },
+      });
+      return user;
+    } catch(err) {
+      throw err;
+    }
+  },
+  //로그인 할 때마다 refreshToken update
+  updateRefreshToken: async (id, refreshToken) => {
+    try {
+      const user = await User.update(
+        { refreshToken},
+        { where: { id }}
+      );
+    } catch (err){
+      throw err;
+    }
   }
 }
